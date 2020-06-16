@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+    {% block content %}
+    {% load assets_extras %}
+    {% load booking_extras %}
+    {% load static %}
+        {% block head_style %}
+            <style>
+               .opacity9{
+                    opacity:2;
+                }
+            </style>
+        {% endblock %}
+        <!-- Slider ============================================= -->
+
+	<section id="content">
+
+        <div class="content-wrap">
+            <div class="container clearfix" >
+
+			{% if messages.ERROR %}
+
+                     {% for error in errors %}
+                           <div class="style-msg errormsg">
+                                <div class="sb-msg" style="color: red"><i class="icon-warning-sign"></i><strong>Warning! </strong>{{ error }}</div><br>
+                            </div>
+                     {% endfor %}
+
+            {% else %}
+                <h2 data-animate="fadeInDown" class="divleft bottommargin font-body ls3" style="max-width: 700px;font-style: italic; font-size: 40px; font-family: 'Playfair Display';">{{ user_details.first_name }} {{ user_details.last_name }}</h2>
+    
+									<div class="not-dark">
+                                        
+                                        <table class = "table table-responsive table-hover">
+                                            <thead>
+                                                <tr>
+                                                    
+                                                    <th>Name</th>
+                                                    <th>Email/Username</th>
+                                                    <th>Date Joined</th>
+                                                                                                       
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                <td>
+                                                    {{ user_details.last_name }}, {{ user_details.first_name }}
+                                                </td>
+                                                <td>{{ user_details.email }}</td>
+                                                <td>{{ user_details.date_joined | date:"d M Y" }}</td>
+                                               
+                                        
+                                                </tr>
+                                              
+                                        </tbody>
+                                        </table>
+                                         
+                                         <br><br>
+								    </div>
+
+                                    {% if 'linked_assets' in request.session %}
+                                    {% return_user_asset_ids request as asset_list %}
+
+                                    <table class = "table table-responsive table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Signed up to</th>
+                                                
+                                                <th>Since</th>
+                                                <th></th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for asset in asset_list %}
+                                            <tr>
+                                                <td><a href="{% url 'make_a_booking' asset.asset_ID_id  %}">{{ asset.asset_ID.asset_display_name }}</a></td>
+                                               
+                                                <td>{{ asset.date_created | date:"d M Y" }}</td>
+                                               <td><i> {{ asset.is_owner | yesno:"(Staff Member), "}}</i></td>
+                                               <td><a href="/asset/members/{{ asset.asset_ID_id }}/{{ request.user.id }}/delete" class="button button-mini button-border button-circle button-dark">Remove Me</a><td>
+
+                                           
+                                           </tr>
+                                           {% endfor %}
+                                       </tbody>
+                                   </table>
+                                    {% endif %}
+                                   
+                                  
+                  
+                                
+                        <div class="clear"></div>
+
+                    <div class="row topmargin-lg divcenter" style="max-width: 1000px;"></div>
+
+            {% endif %}
+                </div>
+
+            </div>
+
+        </section> <!--#slider end -->
+
+    {% endblock %}

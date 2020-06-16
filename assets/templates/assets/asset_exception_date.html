@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+    {% block content %}
+    {% load bootstrap_tags %}
+    {% load assets_extras %}
+    {% load static %}
+        {% block head_style %}
+            <style>
+               .opacity9{
+                    opacity:2;
+                }
+            </style>
+        {% endblock %}
+        <!-- Slider ============================================= -->
+
+    <section id="content">
+
+        <div class="content-wrap">
+            <div class="container clearfix" >
+
+             {%  if errors %}
+
+                     {% for error in errors %}
+                           <div class="style-msg errormsg">
+                                <div class="sb-msg" style="color: red"><i class="icon-warning-sign"></i><strong>Warning: </strong>{{ error }}</div><br>
+                            </div>
+                     {% endfor %}
+
+            {% else %}
+                          <h1 style="font-size: 22px;">{{ asset.asset_display_name }}</h1>
+                        <div class="not-dark">
+                            <span style="font-size: 16px;" class="t300 capitalize ls1 notopmargin"></span></div>
+                            <table>
+                                <tr><td colspan=2><i>CURRENT SETTINGS FOR {{ the_date }}</i></td></tr>
+                                {% if is_a_weekday == True %}
+                                <tr>
+                                    <td><strong>Opening Hours:</strong></td><td>{{ asset.asset_weekday_opening_time }} to {{ asset.asset_weekday_closing_time }}</td>
+                                </tr>
+                                {% else %}
+                                
+                                <tr>
+                                    <td><strong>Opening Hours:</strong></td><td>{{ asset.asset_weekend_opening_time }} to {{ asset.asset_weekend_closing_time }}</td>
+                                </tr>
+                                {% endif %}
+                               
+                                <tr>
+                                    <td><strong>Booking Slot:</strong></td><td>{{ asset.asset_slot_duration }}<td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Members per Slot:</strong></td><td>{{ asset.asset_max_bookings }} members per slot<td>
+                                </tr>
+                                
+                            </table>
+                            {% comment %}
+                             <button class="t400 capitalize button button-border button-dark button-circle nomargin"><a href="/asset/update/{{ asset.id }}">Edit</a></button>
+                             <button class="t400 capitalize button button-border button-dark button-circle nomargin"><a href="/asset/delete/{{ asset.id }}">Delete</a></button>
+                             {% endcomment %}
+
+
+                <form role="form" enctype="multipart/form-data" class="clearfix" method="post">
+
+                                            {% csrf_token %}
+                                            <div class="col_two_fifth">
+                                                <hr>
+
+                                                
+                                                    {{ form | as_bootstrap }}
+                                                
+
+                                           
+                                             <button type="submit" class="t400 capitalize button button-border button-dark button-circle nomargin" value="Update">Update</button>
+                                             
+                                             <a href='{% url 'venue_calendar_admin' asset_id=asset.id %}' class="t400 capitalize button button-border button-dark button-circle nomargin">Back</a>
+                                                </div>
+
+                                                {% if errors %}
+                                                    {% for error in errors %}
+                                                        <div class="style-msg errormsg">
+                                                            <div class="sb-msg" style="color: red"><i class="icon-info-sign"></i>{{ error }}</div>
+                                                        </div>
+                                                    {% endfor %}
+                                                {% endif %}
+
+                                            </form>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    </div>
+                                   
+                                   
+                                    
+                        
+                                
+            <div class="clear"></div>
+
+                    <div class="row topmargin-lg divcenter" style="max-width: 1000px;"></div>
+
+                {% endif %}
+                </div>
+
+            </div>
+
+        </section> <!--#slider end -->
+
+    {% endblock %}

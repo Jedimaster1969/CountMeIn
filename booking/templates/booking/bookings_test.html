@@ -1,0 +1,456 @@
+{% extends 'base.html' %}
+{% load booking_extras %}
+{% load assets_extras %}
+    {% load bootstrap_tags %}
+    {% block content %}
+    {% load static %}
+        {% block head_style %}
+            <style>
+                .opacity9{
+                    opacity:2;
+                }
+            </style>
+        {% endblock %}
+        <!-- Slider ============================================= -->
+    <section id="content">
+
+        <div class="content-wrap">
+
+            <div class="container clearfix" >
+                {%  if errors %}
+                     {% for error in errors %}
+                           <div class="style-msg errormsg">
+                                <div class="sb-msg" style="color: red"><i class="icon-warning-sign"></i><strong>Warning! </strong>{{ error }}</div><br>
+                            </div>
+                     {% endfor %}
+                {% else %}
+                    
+
+                        {% if num_bookings_future > 0 %}
+                            <div data-animate="fadeInDown" class="divleft bottommargin font-body ls3" style="max-width: 700px; font-size:18px; font-family: 'Arial';">Your future
+                                        {%  with total=num_bookings_future %}
+                                             booking{{ total|pluralize }}: 
+                                        {%  endwith %}
+                            </div>
+                                
+
+                            {% regroup future_bookings by requested_date as date_list %}
+
+                            <div class="tabs side-tabs responsive-tabs clearfix" id="tab-4">
+                                    
+                                    <ul class="tab-nav clearfix">
+                                        {% for requested_date in date_list %}
+
+                                            {% if is_owner %}
+                                                {% get_total_bookings_venue asset_id selected_date=requested_date.grouper as num_bookings %}
+                                                                       
+                                            {% else %}
+                                                {% if asset_id %}
+                                                    {% get_total_bookings_user request.user asset_id=asset_id selected_date=requested_date.grouper as num_bookings %}
+                                                {% else %}
+                                                    {% get_total_bookings_user request.user selected_date=requested_date.grouper as num_bookings %}
+                                                {% endif %}
+                                            {% endif %}
+                                            {% if requested_date.grouper == booked_date_to_highlight %}
+                                                <li data-animate="rubberBand" >
+                                            {% else %}
+                                             <li>
+                                            {% endif %}
+                                            <a href="#{{ requested_date.grouper | date:'DdMY'}}"> {{ requested_date.grouper | date:"D, d M" }} <span class="badge badge-secondary float-right" style="margin-top: 15px;">{{ num_bookings}} </span></a></li>
+                                            
+                                        {% endfor %}
+                                    </ul>
+                               
+                                <div class="tab-container">
+                                    {% for requested_date in date_list %}
+                                    <div class="tab-content clearfix" id="{{ requested_date.grouper | date:'DdMY'}}">
+
+                                        {% comment %}
+                                        start of table set-up header etc
+                                        {% endcomment %}
+                                        <div class="col_half">
+                                            <div class = "table-responsive">
+                                            <table class = "table">
+                                                <thead>
+                                                    <tr>
+                                                        
+                                                        <th>Time</th>
+                                                        
+                                                        <th>Name</th>
+                                                        <th></th>
+                                                        <th></th>
+                                                        
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                {% comment %}
+                                                end of table set-up header etc
+                                                {% endcomment %}                                    
+
+
+                                                {% for booking in requested_date.list %}
+                                                    {% comment %}
+                                                    start of the date table
+                                                    {% endcomment %}
+                                                    
+                                                        {% if item.id == booking_id_to_highlight %}
+                                                        
+                                                        <tr data-animate="rubberBand" style ="border:1px;border-radius:5px" >
+                                                        {% else %}
+                                                        <tr>
+                                                        {% endif %}
+
+                                                            <td >{{ booking.requested_start_time | date:"H:i" }} </td>
+                                                            {% if is_owner %}
+                                                                <td ><a href={% url 'member_detail' booking.asset_ID_id booking.requested_by_user_ID.id %}>{{ booking.requested_by_user_ID.first_name }} {{ booking.requested_by_user_ID.last_name }}</a></td>
+                                                            {% else %}
+                                                                <td ><a href={% url 'make_a_booking' booking.asset_ID_id %}>{{ booking.asset_ID.asset_display_name }}</a></td>
+                                                            {% endif  %}
+                                                                
+                                                                
+                                                            
+                                                            
+                                                            <td>{% if not is_owner %}
+                                                                <button class="t400 capitalize button button-border button-mini button-dark button-circle nomargin"><a href="/booking/delete/{{ booking.id }}">Delete</a></button>
+                                                                {% endif %}
+                                                            </td>
+                                                            <td>
+                                                            {% if booking.id == booking_id_to_highlight %}
+                                                                o
+                                                                {% endif %}
+                                                            </td>
+                                                        
+                                                        </tr>
+
+                                                        {% comment %}
+                                                         end of the date table
+                                                        {% endcomment %}
+
+                                                {% endfor %} <!--end for booking -->
+
+                                                {% comment %}
+                                                start of table closing etc
+                                                {% endcomment %}  
+                                                </tbody>
+                                            </table>                                            
+                                            </div>
+                                        </div>
+
+                                    </div> <!-- end of inner-detail content -->
+                                        {% comment %}
+                                        end of table closing etc
+                                        {% endcomment %} 
+                                    {% endfor %} <!--end requested date -->
+
+                                </div> <!-- end of inner-detail container -->
+                            </div> <!-- end of side date tabs container -->
+
+                        <br><br>
+                        {% endif %} <!--end if bookings future -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                        {% if num_bookings_past > 0 %}
+                        <div data-animate="fadeInDown" class="divleft bottommargin font-body ls3" style="max-width: 700px; font-size:18px; font-family: 'Arial';">Your past
+                                        {%  with total=num_bookings_future %}
+                                             booking{{ total|pluralize }}: 
+                                        {%  endwith %}</div>
+
+                            {% regroup past_bookings by requested_date as date_list %}
+
+                           <div class="tabs side-tabs responsive-tabs clearfix" id="tab-4">
+                                
+                                <ul class="tab-nav clearfix">
+                                    {% for requested_date in date_list %}
+
+                                        {% if is_owner %}
+                                            {% get_total_bookings_venue asset_id selected_date=requested_date.grouper as num_bookings %}
+                                                                   
+                                        {% else %}
+                                            {% if asset_id %}
+                                                {% get_total_bookings_user request.user asset_id=asset_id selected_date=requested_date.grouper as num_bookings %}
+                                            {% else %}
+                                                {% get_total_bookings_user request.user selected_date=requested_date.grouper as num_bookings %}
+                                            {% endif %}
+                                        {% endif %}
+                                        {% if requested_date.grouper == booked_date_to_highlight %}
+                                            <li data-animate="rubberBand" >
+                                        {% else %}
+                                         <li>
+                                        {% endif %}
+                                        <a href="#{{ requested_date.grouper | date:'DdMY'}}"> {{ requested_date.grouper | date:"D, d M" }} <span class="badge badge-secondary float-right" style="margin-top: 15px;">{{ num_bookings}} </span></a></li>
+                                        
+                                    {% endfor %}
+                                </ul>
+                           
+                            <div class="tab-container">
+                                {% for requested_date in date_list %}
+                                <div class="tab-content clearfix" id="{{ requested_date.grouper | date:'DdMY'}}">
+
+                                    {% comment %}
+                                    start of table set-up header etc
+                                    {% endcomment %}
+                                    <div class="col_half">
+                                        <div class = "table-responsive">
+                                        <table class = "table">
+                                            <thead>
+                                                <tr>
+                                                    
+                                                    <th>Time</th>
+                                                    
+                                                    <th>Name</th>
+                                                    <th></th>
+                                                    <th></th>
+                                                    
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% comment %}
+                                            end of table set-up header etc
+                                            {% endcomment %}                                    
+
+
+                                            {% for booking in requested_date.list %}
+                                                {% comment %}
+                                                start of the date table
+                                                {% endcomment %}
+                                                
+                                                    {% if item.id == booking_id_to_highlight %}
+                                                    
+                                                    <tr data-animate="rubberBand" style ="border:1px;border-radius:5px" >
+                                                    {% else %}
+                                                    <tr>
+                                                    {% endif %}
+
+                                                        <td >{{ booking.requested_start_time | date:"H:i" }} </td>
+                                                        {% if is_owner %}
+                                                            <td ><a href={% url 'member_detail' booking.asset_ID_id booking.requested_by_user_ID.id %}>{{ booking.requested_by_user_ID.first_name }} {{ booking.requested_by_user_ID.last_name }}</a></td>
+                                                        {% else %}
+                                                            <td ><a href={% url 'make_a_booking' booking.asset_ID_id %}>{{ booking.asset_ID.asset_display_name }}</a></td>
+                                                        {% endif  %}
+                                                            
+                                                            
+                                                        
+                                                        
+                                                        <td>{% if not is_owner %}
+                                                            <button class="t400 capitalize button button-border button-mini button-dark button-circle nomargin"><a href="/booking/delete/{{ booking.id }}">Delete</a></button>
+                                                            {% endif %}
+                                                        </td>
+                                                        <td>
+                                                        {% if booking.id == booking_id_to_highlight %}
+                                                            o
+                                                            {% endif %}
+                                                        </td>
+                                                    
+                                                    </tr>
+
+                                                    {% comment %}
+                                                     end of the date table
+                                                    {% endcomment %}
+
+                                            {% endfor %} <!--end for booking -->
+
+                                            {% comment %}
+                                            start of table closing etc
+                                            {% endcomment %}  
+                                            </tbody>
+                                        </table>                                            
+                                        </div>
+                                    </div>
+
+                                </div> 
+                                    {% comment %}
+                                    end of table closing etc
+                                    {% endcomment %} 
+                                {% endfor %} <!--end requested date -->
+                            </div>
+                        </div>
+
+
+                        {% endif %} <!--end if bookings past -->
+
+
+
+
+
+
+            {% comment %}
+
+
+
+                            {% if num_bookings_future > 0 %}
+                                
+                                    <p> Your future
+                                        {%  with total=num_bookings_future %}
+                                             booking{{ total|pluralize }}: 
+                                        {%  endwith %}
+                                        <div class="col_full">
+                                            <div class = "table-responsive">
+                                            <table class = "table">
+                                                <thead>
+                                                    <tr>
+                                                        
+                                                        <th>Name</th>
+                                                        <th>Date</th>
+                                                        <th>Time</th>
+                                                        <th></th>
+                                                        <th></th>
+                                                        
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                               {%  for item in future_bookings %}
+                                                   
+                                                    {% if item.id == booking_id_to_highlight %}
+                                                    
+                                                    <tr data-animate="rubberBand" style ="border:1px;border-radius:5px" >
+
+                                                    {% else %}
+                                                    <tr>
+                                                    {% endif %}
+
+                                                    {% if is_owner %}
+                                                        <td ><a href={% url 'member_detail' item.asset_ID_id item.requested_by_user_ID.id %}>{{ item.requested_by_user_ID.first_name }} {{ item.requested_by_user_ID.last_name }}</a></td>
+                                                    {% else %}
+                                                        <td ><a href={% url 'make_a_booking' item.asset_ID_id %}>{{ item.asset_ID.asset_display_name }}</a></td>
+                                                    {% endif  %}
+
+                                                    <td>{{ item.requested_date | date:"l" }}, {{ item.requested_date | date:"d M Y" }} </td>
+                                                    <td >{{ item.requested_start_time | date:"H:i" }} </td>
+                                                    
+                                                    
+                                                    <td>{% if not is_owner %}
+                                                        <button class="t400 capitalize button button-border button-dark button-circle nomargin"><a href="/booking/delete/{{ item.id }}">Delete</a></button>
+                                                        {% endif %}
+                                                    </td>
+                                                    <td>
+                                                    {% if item.id == booking_id_to_highlight %}
+                                                        o
+                                                    {% endif %}
+                                                    </td>
+                                                    
+                                                    </tr>
+                                                    
+                                               {% endfor %} <!--end item in future bookings -->
+
+                                                 </tbody>
+                                            </table>
+
+
+                                            </div>
+                                        </div>
+
+
+                                    </p>
+                                
+                          
+                            {% else %}
+                            There are no bookings
+                            {% endif %} <!--end if future -->
+
+
+                        {% if num_bookings_past > 0 %}
+                           
+                                <p> Your previous month's
+                                        {%  with total=num_bookings_past %}
+                                             booking{{ total|pluralize }}: 
+                                        {%  endwith %}
+                                        <div class="col_full">
+                                            <div class = "table-responsive">
+                                            <table class = "table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Name</th>
+                                                        <th>Date</th>
+                                                        <th>Time</th>
+                                                        <th></th>
+                                                        <th></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                {%  for item in past_bookings %}
+                                                   
+                                                    {% if item.id == booking_id_to_highlight %}
+                                                    
+                                                    <tr data-animate="rubberBand" style ="border:1px;border-radius:5px" >
+
+                                                    {% else %}
+                                                    <tr>
+                                                    {% endif %}
+                                                    <td ><a href={% url 'make_a_booking' item.asset_ID_id %}>{{ item.asset_ID.asset_display_name }}</a></td>
+                                                    
+                                                    <td>{{ item.requested_date | date:"l" }}, {{ item.requested_date | date:"d M Y" }} </td>
+                                                    <td >{{ item.requested_start_time | date:"H:i" }} </td>
+                                                    
+                                                    
+                                                    <td><button class="t400 capitalize button button-border button-dark button-circle nomargin"><a href="/booking/delete/{{ item.id }}">Delete</a></button></td>
+                                                    <td>
+                                                    
+                                                    </td>
+                                                    
+                                                    </tr>
+                                                
+                                                {% endfor %} <!--end item in past_bookings -->
+                                                 </tbody>
+                                            </table>
+                                            </div>
+                                        </div>
+
+
+                                    </p>
+                            <br><br>
+
+                           
+                        {% endif %} <!--if end bookings past -->
+
+                    {% endcomment %}       
+
+                    <div class="clear"></div>
+
+                    <div class="row topmargin-lg divcenter" style="max-width: 1000px;"></div>
+
+                {% endif %} <!--if errors end-->
+
+
+                
+
+				</div><!--end page main container -->
+			</div> <!--end page main content wrap -->
+		</section> <!--#slider end -->
+
+
+
+    {% endblock %}

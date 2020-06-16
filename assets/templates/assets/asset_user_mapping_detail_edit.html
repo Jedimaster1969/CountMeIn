@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+    {% block content %}
+    {% load assets_extras %}
+    {% load bootstrap_tags %}
+    {% load static %}
+        {% block head_style %}
+            <style>
+               .opacity9{
+                    opacity:2;
+                }
+            </style>
+        {% endblock %}
+        <!-- Slider ============================================= -->
+
+	<section id="content">
+
+        <div class="content-wrap">
+            <div class="container clearfix" >
+
+  
+			{% if errors %}
+
+                     {% for error in errors %}
+                           <div class="style-msg errormsg">
+                                <div class="sb-msg" style="color: red"><i class="icon-warning-sign"></i><strong>Warning </strong>{{ error }}</div><br>
+                            </div>
+                     {% endfor %}
+
+            {% else %}
+                
+
+					
+                        {% is_user_also_owner request.user.id asset.id as is_owner %} 
+                        {% is_asset_verifying_members asset.id as is_verifying %}
+                       
+                        {% if is_owner %}
+                        <h2 data-animate="fadeInDown" class="divleft bottommargin font-body ls3" style="max-width: 700px;font-style: italic; font-size: 40px; font-family: 'Playfair Display';">{{ asset.asset_display_name }}</h2>
+                                   
+									<div class="not-dark">
+                                        
+                                        <table class = "table table-responsive table-hover">
+                                            <thead>
+                                                <tr>
+                                                    
+                                                    <th>Member</th>
+                                                    <th>Email</th>
+                                                    <th>Date Joined</th>
+                                                        {% if is_verifying %}
+                                                    <th>Is Verified?</th>
+                                                        {% endif %}
+                                                    <th>Membership Number</th>
+                                                    <th>Swipe Number</th>
+                                                    
+                                                    <th>Notes</th>
+                                                    
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+
+                                               
+                                                <tr>
+                                                <td>{{ member.user_ID.last_name }}, {{ member.user_ID.first_name }}
+                                                    {% if member.is_owner %}
+                                                    <span style="color:purple"><i>(staff)</i></span>
+                                               </td>
+                                                {% endif %}
+                                                <td>{{ member.user_ID.email }}</td>
+                                                <td>{{ member.date_created | date:"d M Y" }}</td>
+                                                    {% if is_verifying %}
+                                                <td>{{ member.is_verified | yesno:"Yes, Not Yet" }}</td>
+                                                    {% endif %}
+                                                <td>{{ member.asset_membership_ID|default_if_none:"-----" }}</td>
+                                                <td>{{ member.asset_swipe_ID|default_if_none:"-----" }}</td>
+                                                
+                                                <td>{{ member.admin_notes |default_if_none:"-----" }}</td>
+                                                                                           
+                                                </tr>
+                                               
+                                        </tbody>
+                                        </table>
+
+
+                                        
+                                            <form role="form" enctype="multipart/form-data" class="clearfix" method="post">
+
+                                            {% csrf_token %}
+                                            
+                                            <div class="col_half">
+                                                <hr>
+
+                                                
+                                                    {{ form | as_bootstrap }}
+                                                
+
+                                           
+                                             <button type="submit" class="t400 capitalize button button-border button-dark button-circle nomargin" value="Update">Update</button>
+                                             <button class="t400 capitalize button button-border button-dark button-circle nomargin"><a href="../">Back</a></button>  
+                                            </div>
+                                             
+
+                                                {% if errors %}
+                                                    {% for error in errors %}
+                                                        <div class="style-msg errormsg">
+                                                            <div class="sb-msg" style="color: red"><i class="icon-info-sign"></i>{{ error }}</div>
+                                                        </div>
+                                                    {% endfor %}
+                                                {% endif %}
+
+                                            </form>
+
+                                        
+
+								</div>
+                                   
+                                   
+                                  
+                        {% endif %}
+                                
+                    <div class="clear"></div>
+
+                    <div class="row topmargin-lg divcenter" style="max-width: 1000px;"></div>
+
+            {% endif %}
+                </div>
+
+            </div>
+
+        </section> <!--#slider end -->
+
+    {% endblock %}

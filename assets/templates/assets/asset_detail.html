@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+    {% block content %}
+    {% load assets_extras %}
+    {% load static %}
+        {% block head_style %}
+            <style>
+               .opacity9{
+                    opacity:2;
+                }
+            </style>
+        {% endblock %}
+        <!-- Slider ============================================= -->
+
+    <section id="content">
+
+        <div class="content-wrap">
+            <div class="container clearfix" >
+
+             {%  if errors %}
+
+                     {% for error in errors %}
+                           <div class="style-msg errormsg">
+                                <div class="sb-msg" style="color: red"><i class="icon-warning-sign"></i><strong>Warning: </strong>{{ error }}</div><br>
+                            </div>
+                     {% endfor %}
+
+            {% else %}
+                          <h1 style="font-size: 22px;">{{ asset.asset_display_name }}</h1>
+                        <div class="not-dark">
+                            
+                            <span style="font-size: 16px;" class="t300 capitalize ls1 notopmargin"></span></div>
+                            <table>
+                                
+                                <tr>
+                                    <td><strong>Open:</strong></td><td>&nbsp&nbsp{{ asset.asset_opening_days }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Weekday Hours:</strong></td><td>&nbsp&nbsp{{ asset.asset_weekday_opening_time }} to {{ asset.asset_weekday_closing_time }}</td>
+                                </tr>
+                                {% get_asset_opening_days asset.id as num_days_open %}
+                                {% if num_days_open > 5 %}
+                                <tr>
+                                    <td><strong>Weekend Hours:</strong></td><td>&nbsp&nbsp{{ asset.asset_weekend_opening_time }} to {{ asset.asset_weekend_closing_time }}</td>
+                                </tr>
+                                {% endif %}
+                                <tr>
+                                    <td><strong>Invitation Link:</strong></td><td>&nbsp&nbsp{{ asset.invite_code_url }}</td>
+                                </tr>
+                                
+                                <tr>
+                                    <td><strong>Booking Slot:</strong></td><td>&nbsp&nbsp{{ asset.asset_slot_duration }}<td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Members per Slot:</strong></td><td>&nbsp&nbsp{{ asset.asset_max_bookings }} members per slot<td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Calendar Display:</strong></td><td>&nbsp&nbsp{{ asset.num_days_display_to_users }} days (including today)<td>
+                                </tr>
+                            </table>
+
+                            <a href='{% url 'asset_detail_edit' asset_id=asset.id %}' class="button button-mini button-mini button-border button-circle button-dark"">Edit</a>
+                            <a href='{% url 'make_a_booking' asset_id=asset.id %}' class="button button-mini button-mini button-border button-circle button-dark"">View Booking Calendar</a>
+
+                            {% comment %}
+                             <button class="t400 capitalize button button-border button-dark button-circle nomargin"><a href="/asset/update/{{ asset.id }}">Edit</a></button>
+                             <button class="t400 capitalize button button-border button-dark button-circle nomargin"><a href="/asset/delete/{{ asset.id }}">Delete</a></button>
+                             {% endcomment %}
+                    </div>
+                                   
+                                   
+                                    
+                        
+                                
+            <div class="clear"></div>
+
+                    <div class="row topmargin-lg divcenter" style="max-width: 1000px;"></div>
+
+                {% endif %}
+                </div>
+
+            </div>
+
+        </section> <!--#slider end -->
+
+    {% endblock %}

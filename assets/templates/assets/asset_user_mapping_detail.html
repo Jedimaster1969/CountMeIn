@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+    {% block content %}
+    {% load assets_extras %}
+    {% load static %}
+        {% block head_style %}
+            <style>
+               .opacity9{
+                    opacity:2;
+                }
+            </style>
+        {% endblock %}
+        <!-- Slider ============================================= -->
+
+	<section id="content">
+
+        <div class="content-wrap">
+            <div class="container clearfix" >
+
+			{% if errors %}
+
+                     {% for error in error %}
+                           <div class="style-msg errormsg">
+                                <div class="sb-msg" style="color: red"><i class="icon-warning-sign"></i><strong>Warning </strong>{{ error }}</div><br>
+                            </div>
+                     {% endfor %}
+
+            {% else %}
+                
+
+					
+                        {% is_user_also_owner request.user.id asset.id as is_owner %} 
+                        {% is_asset_verifying_members asset.id as is_verifying %}
+                       
+                        {% if is_owner %}
+                        <h2 data-animate="fadeInDown" class="divleft bottommargin font-body ls3" style="max-width: 700px;font-style: italic; font-size: 40px; font-family: 'Playfair Display';">{{ asset.asset_display_name }}</h2>
+                                   
+									<div class="not-dark">
+                                        
+                                        <table class = "table table-responsive table-hover">
+                                            <thead>
+                                                <tr>
+                                                    
+                                                    <th>Member</th>
+                                                    <th>Email</th>
+                                                    <th>Date Joined</th>
+                                                     {% if is_verifying %}
+                                                        <th>Is Verified?</th>
+                                                        {% endif %}
+                                                     <th>Membership Number</th>
+                                                     <th>Swipe Number</th>
+                                                    
+                                                    <th></th>
+                                                    <th>Notes</th>
+                                                    <th></th>
+                                                    
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+
+                                                {% for item in members %}
+                                                <tr>
+                                                <td>
+                                                   
+                                                    {{ item.user_ID.last_name }}, {{ item.user_ID.first_name }}
+                                                
+                                                    {% if item.is_owner %}
+                                                    <span style="color:purple"><i>(staff)</i></span>
+                                                    {% endif %}
+                                                </td>
+                                                <td>{{ item.user_ID.email }}</td>
+                                           
+                                                <td>{{ item.date_created | date:"d M Y" }}</td>
+                                                {% if is_verifying %}
+                                                    <td>{{ item.is_verified | yesno:"Yes, Not Yet" }}</td>
+                                                {% endif %}
+                                                <td>{{ item.asset_membership_ID|default_if_none:"-----" }}</td>
+                                                <td>{{ item.asset_swipe_ID|default_if_none:"-----" }}</td>
+                                                
+                                                <th></th>
+                                                <td>{{ item.admin_notes | default_if_none:"-----" }}</td>
+                                                <td><a href="/asset/members/{{ asset.id }}/{{ item.user_ID.id }}/edit" class="button button-mini button-mini button-border button-circle button-dark"">Edit</a>
+                                                    
+                                                </td>   
+                                           
+                                                </tr>
+                                                {% endfor %}
+                                        </tbody>
+                                        </table>
+
+								</div>
+                                   
+                                   
+                                  
+                        {% endif %}
+                                
+            <div class="clear"></div>
+
+                    <div class="row topmargin-lg divcenter" style="max-width: 1000px;"></div>
+
+                {% endif %}
+                </div>
+
+            </div>
+
+        </section> <!--#slider end -->
+
+    {% endblock %}

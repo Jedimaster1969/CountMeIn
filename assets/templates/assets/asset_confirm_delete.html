@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+    {% block content %}
+    {% load static %}
+        {% block head_style %}
+            <style>
+                input {
+                    width: 100%;
+                    padding: 12px 20px;
+                    margin: 2px 0;
+                    box-sizing: border-box;
+                    border-radius: 10px;
+                    border: none;
+               }
+
+                @media screen and (max-width: 480px) {
+                    #the_padding {padding: 10px;}
+                }
+
+            </style>
+        {% endblock %}
+        <!-- Slider ============================================= -->
+{#        full-screen #}
+		<section id="slider" class="">
+{#        slider-parallax-inner#}
+        <div class="">
+{#           section full-screen ohidden#}
+			<div class="  nopadding nomargin noborder " style="background: url({% static 'images/home/stones.jpg' %}) bottom center no-repeat; background-size: cover;">
+
+                <div class="row nomargin" style="position: relative; z-index: 2;">
+{#                    full-screen#}
+						<div class="col-md-offset-1 col-md-5 " style="background-color: rgba(0,0,0,0.45);">
+{#                 vertical-middle           #}
+							<div id="the_padding" class=" col-padding">
+								<div class="heading-block nobottomborder bottommargin-sm dark">
+									<h1 style="font-size: 22px;">All Venues</h1>
+									<div class="not-dark">
+                                        <span style="font-size: 16px;" class="t300 capitalize ls1 notopmargin"></span></div>
+                                        <form role="form" class="clearfix" method="post">
+
+                                            {% csrf_token %}
+                                            <div class="col_full not-dark">
+                                                 <table>
+                                                   <tr>
+                                                       <td colspan=2>Are you sure you want to delete "{{ asset }}"?</td>
+
+                                                   </tr>
+                                                
+                                                 </table>
+                                                 
+                                                       
+                                                <button type="submit" class="t400 capitalize button button-border button-light button-circle nomargin">
+                                                        Delete</button>
+
+                                                <button class="t400 capitalize button button-border button-light button-circle nomargin"><a href="/assets/">Cancel</a>  </button> 
+
+                                            </div>
+
+
+                                            {% if errors %}
+                                                {% for error in errors %}
+                                                    <div class="style-msg errormsg">
+                                                        <div class="sb-msg" style="color: red"><i class="icon-info-sign"></i>{{ error }}</div>
+                                                    </div>
+                                                {% endfor %}
+                                            {% endif %}
+
+                                    </form>
+								</div>
+
+                                
+
+							</div>
+
+						</div>
+					</div>
+
+			</div>
+        </div>
+		</section> <!--#slider end -->
+
+    {% endblock %}

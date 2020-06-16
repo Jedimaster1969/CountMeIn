@@ -1,0 +1,12 @@
+Django==3.0.6
+asgiref==3.2.7
+django-forms-bootstrap==3.1.0
+mysqlclient==1.4.6
+mysql-connector-python==8.0.20
+Pillow==7.1.2
+protobuf==3.12.2
+pytz==2020.1
+six==1.15.0
+sqlparse==0.3.1
+whitenoise==5.1.0
+

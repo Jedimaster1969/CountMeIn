@@ -1,0 +1,408 @@
+{% load static %}
+{% load booking_extras %}
+{% load assets_extras %}
+<!doctype html>
+<html dir="ltr" lang="en">
+	<head>
+		
+		
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<meta name="author" content="SemiColonWeb" />
+
+		<!-- Stylesheets
+		============================================= -->
+		<!--<link href="https://fonts.googleapis.com/css?family=Lato:300,400,400i,700|Raleway:300,400,500,600,700|Crete+Round:400i" rel="stylesheet" type="text/css" />
+		<link href="https://fonts.googleapis.com/css?family=Titillium+Web" rel="stylesheet"> -->
+		<link rel="stylesheet" href="{% static 'css/bootstrap.css' %}" type="text/css" />
+		<link rel="stylesheet" href="{% static 'style.css' %}" type="text/css" />
+		<link rel="stylesheet" href="{% static 'css/swiper.css' %}" type="text/css" />
+		<link rel="stylesheet" href="{% static 'css/dark.css' %}" type="text/css" />
+		<link rel="stylesheet" href="{% static 'css/font-icons.css' %}" type="text/css" />
+		<link rel="stylesheet" href="{% static 'css/animate.css' %}" type="text/css" />
+		<link rel="stylesheet" href="{% static 'css/magnific-popup.css' %}" type="text/css" />
+        <link rel="stylesheet" href="{% static 'css/calendar.css' %}" type="text/css" />
+
+		<link rel="stylesheet" href="{% static 'css/responsive.css' %}" type="text/css" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+		<link rel="stylesheet" href="{% static 'css/font-awesome-4.6.3/css/font-awesome.css' %}" />
+
+
+		
+		<title>
+			
+			COUNT ME IN
+		
+		</title>
+
+		{% block head_js %}{% endblock head_js%}
+    	{% block head_style %}{% endblock head_style %}
+		
+        <style>
+
+        @media screen and (max-width: 991px) {
+
+            #header {height: 110px !important;}
+
+                }
+        </style>
+
+
+	</head>
+
+    <script type = "text/javascript" language = "JavaScript">
+
+        function imgOver()
+        {
+            document.databasis_logo.src = "{% static 'images/home/databasis_logo2.gif' %}";
+        }
+
+        function imgOut()
+
+        {
+            document.databasis_logo.src = "{% static 'images/home/databasis_logo.gif' %}";
+
+        }
+
+    </script>
+
+
+
+
+	<body class="stretched">
+	
+		<!-- Document Wrapper
+	============================================= -->
+	<div id="wrapper" class="clearfix">
+
+		<!-- Header
+		============================================= -->
+		<header id="header" class="dark full-header static-sticky sticky-header" style="height: 110px;">
+			<!--<div id="header-wrap" class="dark full-header static-sticky sticky-header" style="height: 110px;">-->
+            <div id="header-wrap">
+				<div class="container clearfix">
+
+					<div id="primary-menu-trigger" style="width: 30px"><i class="icon-reorder"></i></div>
+
+
+                <div id="logo" style="border-right:none;">
+
+                   <div class="tleft" style="padding-top:30px; padding-left: 10px; font-size: 24px" >Count Me In | <span style="display: inline-block;"> <div style="text-transform:none; font-family:Times New Roman; font-style:italic;">Invotech</div></span> 
+                    <div class="bottommargin-sm tleft" style="font-size: 12px">{{ user.first_name }} {{ user.last_name }} {% if user.is_authenticated %} is logged in {% endif %}</div>
+                    </div>
+
+                </div>
+
+
+					<!-- Primary Navigation
+					============================================= -->
+
+                    <nav id="primary-menu" class="with-arrows">
+
+						<ul style="border-right:none;" >
+                            {% if user.is_authenticated %}
+
+                               <li class="current"><a href="{% url 'profile' %}"><div>Home</div></a></li> 
+                            
+                                {% if 'linked_assets' in request.session %}
+
+                                    {# show a MENU item that consists of this user's Assets as an Owner #}
+                                    {% return_user_asset_ids request as asset_list %}
+
+                                    {% is_an_owner_in_asset_list asset_list as show_venue_admin %}
+
+                                    {% if show_venue_admin %}
+                                    <li><a href="#"><div>Venue Admin</div></a>
+                                        <ul>
+                                            {% for asset in asset_list %}
+                                            {% if asset.is_owner %}
+                                            {% get_total_bookings_venue asset.asset_ID_id time_period='future' as totes_bookings %}
+                                            {% get_total_bookings_venue asset.asset_ID_id time_period='past' as totes_past_bookings %}
+
+                                            <li><a href="#"><div>{{ asset.asset_ID.asset_display_name }}</div></a>
+                                                <ul>
+                                                    <li class="divider"></li>
+                                                    <li><a href="{% url 'asset_detail' asset.asset_ID_id %}"><div> View Details </div></a></li>
+                                                    <li><a href="{% url 'my_venue_bookings' asset_id=asset.asset_ID_id %}"><div> View Bookings </div></a></li>
+                                                    
+
+                                                    <li><a href="#"><div>Calendar</div></a>
+                                                        <ul>
+                                                            <li><a href="{% url 'venue_calendar_admin' asset.asset_ID.id %}"><div>View Calendar</div></a></li>
+                                                            <li><a href="{% url 'asset_exception_detail' asset.asset_ID.id %}"><div>Add Exception Date</div></a></li>
+                                                        </ul>
+                                                    </li>
+                                                    
+                                                    <li><a href="#"><div>Members</div></a>
+                                                        <ul>
+                                                            <li><a href="{% url 'member_detail' asset.asset_ID_id %}"><div> Members <div class="badge">{% num_members_activated asset.asset_ID_id %}</div></div></a></li>
+                                                        
+                                                            {% num_members_deactivated asset.asset_ID_id as num_deactivated %}
+                                                                {% if num_deactivated > 0 %}
+                                                                <li><a href="{% url 'member_detail' asset_id=asset.asset_ID_id activated=False %}"><div> Members Deactivated <div class="badge">{{ num_deactivated }}</div></div></a></li>
+                                                                {% endif %}
+
+                                                            {% is_asset_verifying_members asset.asset_ID_id as is_verifying %}
+                                                            {% if is_verifying %}
+                                                                <li class="divider"></li>
+                                                                {% num_members_to_be_verified asset.asset_ID_id as to_be_verified %}
+                                                                {%  if to_be_verified > 0 %}
+                                                                    <li><a href="{% url 'member_detail' asset.asset_ID.id %}"><div>Members to be Verified &nbsp<div class="badge">{{to_be_verified}}</div></div></a></li>
+                                                                {% endif %}
+                                                            {% endif %}
+                                                        </ul>
+                                                    </li>
+                                                   
+                                                    
+                                                
+
+                                                </ul> <!--- end of asset menus ul --->
+
+                                            </li> <!--- end of asset display name li --->
+                                            {% endif %}
+                                            {% endfor %}
+
+                                        </ul>
+                                    </li>
+                                    {% endif %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                    {# show a MENU item that consists of this user's Assets as a normal Member#}
+                                    {% return_user_asset_ids request as asset_list %}
+                                    <li><a href="#"><div>My Venues</div></a>
+                                        <ul>
+                                            {% for asset in asset_list %}
+                                            <li><a href="#"><div>{{ asset.asset_ID.asset_display_name }}</div></a>
+                                                <ul>
+                                                
+
+                                                    <li class="divider"></li>
+                                                    <li><a href="{% url 'make_a_booking' asset.asset_ID.id %}"><div>Make a Booking</div></a></li>
+                                                    
+                                                    {% get_total_bookings_user request.user asset_id=asset.asset_ID_id time_period='future' as totes_bookings %}
+                                                    {% if totes_bookings > 0 %}
+                                                    <li class="divider"></li>
+                                                    <li><a href="{% url 'my_bookings' asset_id=asset.asset_ID_id %}"><div>My Bookings <div class="badge">{{ totes_bookings }}</div></div></a></li>
+                                                    {% endif %}
+
+                                                   
+
+                                                    <li class="divider"></li>
+                                            
+                                                </ul> <!--- end of asset menus lu --->
+
+                                            </li> <!--- end of asset display name li --->
+                                            {% endfor %}
+
+                                        </ul>
+                                    </li>
+                                
+                                {% endif %}
+
+                                
+                                <li><a href="#"><div>My Details</div></a>
+                                    <ul>
+                                        <li><a href="{% url 'my_details' %}"><div>View my Details</div></a></li>
+                                        <li><a href="{% url 'password_change' %}"><div>Change My Password</div></a></li>
+                                        
+                                    </ul>
+                                </li>
+                                
+                                <li><a href="{% url 'logout' %}"><div>Sign Out</div></a></li>
+                                <li><a href="{% url 'contact' %}"><div>Contact Us</div></a></li>
+                                {% if user.is_superuser %}
+                                    <li><a href="/admin"><div>Admin</div></a></li>
+                                {%  endif %}
+
+                            {% else %} <!-- no linked asset menus needed -->
+
+                                <li><a href="/" ><div>Home</div></a></li>
+                                <li><a href="{% url 'login' %}"><div>Sign In</div></a></li>
+							    <li><a href="{% url 'register' %}"><div>Register</div></a></li>
+                                <li><a href="{% url 'contact' %}"><div>Contact Us</div></a></li>
+
+                            {%  endif %}
+
+						</ul>
+
+					</nav><!-- #primary-menu end -->
+
+				</div>
+
+			</div>
+
+		</header><!-- #header end -->
+
+		
+
+		
+		{% if messages %}
+            <div class="alert alert-info">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                <div class="messages">
+                    {% for message in messages %}
+                        {{ message }}
+                    {% endfor %}
+                   
+                   </div>
+            </div>
+
+        <script type="text/javascript">
+       /*
+        $(document).ready(function(){
+            $(function() {
+              $('#myModal').modal({show: true});
+            });
+
+        });
+        */
+        </script>
+
+        {% endif %}
+        {% if messages %}
+        <div class="messages">
+            <div id="myModal" class="modal" role="dialog">
+              <div class="modal-dialog modal-sm">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Count Me In</h4>
+                  </div>
+                  <div class="modal-body">
+
+                    {% for message in messages %}
+                        {{ message }}
+                    {% endfor %}
+
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+        </div>
+        {% endif %}
+
+		{% block content %}
+
+        {% endblock content %}
+
+		<!-- Footer
+		============================================= -->
+		<footer id="footer" class="dark noborder">
+
+			<div class="container center">
+				<div class="footer-widgets-wrap">
+
+					<div class="row divcenter clearfix">
+
+						<div class="col-md-4">
+
+							<div class="widget clearfix">
+								<h4>How Do I?</h4>
+
+								<ul class="list-unstyled footer-site-links nobottommargin">
+									<li><a target="_blank" data-easing="easeInOutExpo" data-speed="1250" data-offset="70">Count Myself In?</a></li>
+                                    <li><a target="_blank" data-easing="easeInOutExpo" data-speed="1250" data-offset="70">Share my Venue?</a></li>
+									<li><a target="_blank" data-easing="easeInOutExpo" data-speed="1250" data-offset="70">Make a Booking?</a></li>
+									<li><a target="_blank" data-easing="easeInOutExpo" data-speed="1250" data-offset="70">Manage my Members?</a></li>
+                                    <li><a target="_blank" data-easing="easeInOutExpo" data-speed="1250" data-offset="70">Add my Venue?</a></li>
+								</ul>
+                                <br><br>
+							</div>
+
+
+						</div>
+
+						<div class="col-md-4">
+
+							<div class="widget clearfix">
+                                <h4>Copyright</h4>
+                                <span class="ls2" style="font-family: 'Playfair Display'; font-style: italic; text-transform: lowercase; color: #FFF;"> Databasis</span><br>
+{#                                 http://stackoverflow.com/questions/4562587/shortest-way-to-print-current-year-in-javascript#}
+                                <script>document.write(new Date().getFullYear())</script><br>
+                                All Rights Reserved
+							</div>
+
+
+
+									
+
+
+                            <br><br>
+						</div>
+
+						<div class="col-md-4">
+
+							<div class="widget clearfix">
+								<h4>Contact</h4>
+                                
+                                <a target="_blank" href="http://www.databasis.ie"><span class="ls2" style="font-family: 'Playfair Display'; font-style: italic; font-size: 25px; text-transform: lowercase; color: #FFF;"> Databasis</span></a>
+                                <div class="oc-item"><img name="databasis_logo" src="{% static 'images/home/databasis_logo.gif' %}" alt="Databasis Logo" height="48" width="47" onMouseOver=imgOver() onMouseOut=imgOut()></div>
+                                 <ul class="list-unstyled footer-site-links nobottommargin">
+                                     <li>Dublin</li>
+                                     <li>Ireland</li>
+                                     </ul>
+							</div>
+
+						</div>
+
+					</div>
+
+				</div>
+			</div>
+
+			<div id="copyrights">
+				<div class="container center clearfix">
+             
+					Copyright &nbsp&nbsp <span class="ls5" style="font-family: 'Playfair Display'; font-style: italic; text-transform: lowercase; color: #FFF;"> Databasis</span>  <script>document.write(new Date().getFullYear())</script> | All Rights Reserved
+				</div>
+			</div>
+
+		</footer><!-- #footer end -->
+
+	</div><!-- #wrapper end -->
+	<!-- Go To Top
+	============================================= -->
+	<div id="gotoTop" class="icon-angle-up"></div>
+
+	<!-- External JavaScripts
+	============================================= -->
+	<script src="{% static 'js/jquery.js' %}"></script>
+	<script src="{% static 'js/plugins.js' %}"></script>
+    {% block footer_js %}
+    {% endblock footer_js %}
+
+	<!-- Footer Scripts
+	============================================= -->
+	<script src="{% static 'js/functions.js' %}"></script>	
+
+	
+	</body>
+</html>

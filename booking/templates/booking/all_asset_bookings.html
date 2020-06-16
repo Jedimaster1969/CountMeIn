@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+{% load booking_extras %}
+    {% load bootstrap_tags %}
+    {% block content %}
+        {% block head_style %}
+            <style>
+                .opacity9{
+                    opacity:2;
+                }
+            </style>
+        {% endblock %}
+    <section id="content">
+
+        <div class="content-wrap">
+
+            <div class="container clearfix" >
+
+                <h2 data-animate="fadeInDown" class="divleft bottommargin font-body ls3" style="max-width: 700px;font-style: italic; font-size: 40px; font-family: 'Playfair Display';">
+                Bookings | {{ asset.asset_display_name }}</h2>
+
+                 <p>
+                       {{ page_name }}
+                        {% if return_page_user %}
+                        (requested by me)
+                            {% else %}
+                            (all Members)
+                        {% endif %}
+                 </p>
+
+
+
+                {%  if errors %}
+                     {% for error in errors %}
+                           <div class="style-msg errormsg">
+                                <div class="sb-msg" style="color: red"><i class="icon-warning-sign"></i><strong>Warning! </strong>{{ error }}</div><br>
+                            </div>
+                     {% endfor %}
+                {% else %}
+
+                    {% if bookings %}
+                            <p>
+                        <div class = "table-responsive">
+                            <table class = "table">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Time</th>
+                                        <th>Name</th>
+                                        
+                                        
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+
+
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {%  for item in bookings %}
+
+
+                                    <tr >
+                                        <td>{% get_booking_date item.id as the_start %}{{ the_start | date:"l" }}, {{ the_start | date:"d M Y" }}</td>
+                                        <td>{% get_booking_start_time item.id as the_end %} {{ the_end | date:"H:i" }}</td>
+                                        {% if owner_id %} OwnerID!
+                                        <td> {{ item.requested_by_user_ID_id.first_name }} </td>
+                                        {% endif %}
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+
+
+                                        <td></td>
+
+                                    </tr>
+
+                                {% endfor %}
+
+                                 </tbody>
+                            </table>
+                        </div>
+                        <p>
+{#                        <a href="{% url 'profile' %}" class="btn btn-primary">Back to My Profile</a>#}
+                        </p>
+
+                            </p>
+                            {% else %}
+                                {% if assets.count > 0 %}
+                                    You have no upcoming bookings <br>
+                                    {% for asset in assets %}
+                                        <a href="{% url 'make_a_booking' asset.asset_ID_id %}" role="button" class = "btn btn-primary">Make a Booking | {{ asset.asset_ID.asset_display_name }}</a>
+                                    {% endfor %}
+                                {% endif %}
+                            {% endif %}
+
+                {% endif %}
+
+                <div class="clear"></div>
+
+                <div class="row topmargin-lg divcenter" style="max-width: 1000px;"></div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    {% endblock %}

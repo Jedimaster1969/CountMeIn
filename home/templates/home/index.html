@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% load static %}
+<section id="slider" class="slider-element slider-parallax full-screen clearfix" style="background: url({% static 'images/home/stones.jpg' %}); bottom center no-repeat;background-size: cover;" data-height-xl="670" data-height-lg="500" data-height-md="400" data-height-sm="300" data-height-xs="300" >
+			<div class="slider-parallax-inner">
+				<div class="container clearfix">
+					<div class="vertical-middle center">
+							
+							<div class="d-none d-md-block">
+								<div class="heading-block nobottomborder center">
+									<div data-animate ="fadeInUp" data-delay="200">
+											<h1 style="font-size: 45px;">Count Me In</h1>
+								</div>	
+								<div data-animate ="fadeInUp" data-delay="800">
+											<p class="d-none d-sm-block" style="font-size: 25px;">Let them know you'll be there</p>
+									</div>
+								</div>
+							</div>
+
+						<div class="d-block d-md-none">
+							<div class="heading-block nobottomborder center">
+									<div data-animate ="fadeInUp" data-delay="200">
+											<h1 style="font-size: 35px;">Count Me In</h1>
+								</div>	
+								<div data-animate ="fadeInUp" data-delay="800">
+											<p style="font-size: 18px;">Let them know you'll be there</p>
+									</div>
+								</div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</section>
+
+{% endblock content %}

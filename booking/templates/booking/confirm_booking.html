@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% load booking_extras %}
+    {% load bootstrap_tags %}
+    {% block content %}
+    {% load static %}
+        {% block head_style %}
+            <style>
+                .opacity9{
+                    opacity:2;
+                }
+            </style>
+        {% endblock %}
+        <!-- Slider ============================================= -->
+    <section id="content">
+
+        <div class="content-wrap">
+
+            <div class="container clearfix" >
+
+                {% if user_ok %}
+
+                <h2 data-animate="fadeInDown" class="divleft bottommargin font-body ls3" style="max-width: 700px;font-style: italic; font-size: 40px; font-family: 'Playfair Display';">{{ asset.asset_display_name }}</h2>
+                        
+                     <div class="col_one_fourth">      
+                        <form role="form" class="clearfix" method="post">
+
+                                    {% csrf_token %}
+                                   
+                                    
+                                        {{ bookingform | as_bootstrap}}
+                                    
+                                   
+                                     <div class="form-group  ">
+                                        <label for="id_requested_date" class="control-label required-field ">
+                                        Selected Date
+                                        </label>
+                                        <div class="">
+                                         <div class=" form-control">{{ request_date }}</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group  ">
+
+                                        <label for="id_requested_start_time" class="control-label required-field ">
+                                                Selected Time-Slot
+                                            </label>
+                                        <div class = "">
+                                         <div class=" form-control">{{ request_time }}</div>
+                                     </div>
+                                    </div>
+
+
+                                    <div class="form-group">
+                                        <button type="submit" class="t400 capitalize button button-border button-dark button-circle nomargin">Confirm</button>
+                                    </div>
+                                    <div class="form-group">
+                                        <button class="t400 capitalize button button-border button-light button-circle nomargin"><a href='{% url 'make_a_booking' asset_id=asset.id %}'>Go Back</a></button>
+                                    </div>
+                                                                   
+                                    <input type="hidden" name="next" value="{{ next }}" />
+
+                                    {% if errors %}
+                                        {% for error in errors %}
+                                            <div class="style-msg errormsg">
+                                                <div class="sb-msg" style="color: red"><i class="icon-info-sign"></i>{{ error }}</div>
+                                            </div>
+                                        {% endfor %}
+                                    {% endif %}
+
+                        </form>
+                     </div>  
+
+                     {% endif %}
+
+                    <div class="clear"></div>
+
+                    <div class="row topmargin-lg divcenter" style="max-width: 1000px;"></div>
+				</div>
+
+			</div>
+
+		</section> <!--#slider end -->
+
+
+
+    {% endblock %}

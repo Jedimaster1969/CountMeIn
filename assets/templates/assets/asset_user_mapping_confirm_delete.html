@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+    {% block content %}
+    {% load assets_extras %}
+    {% load static %}
+        {% block head_style %}
+            <style>
+               .opacity9{
+                    opacity:2;
+                }
+            </style>
+        {% endblock %}
+        <!-- Slider ============================================= -->
+
+	<section id="content">
+
+        <div class="content-wrap">
+            <div class="container clearfix" >
+
+			 {%  if errors %}
+
+                     {% for error in errors %}
+                           <div class="style-msg errormsg">
+                                <div class="sb-msg" style="color: red"><i class="icon-warning-sign"></i><strong>Warning! </strong>{{ error }}</div><br>
+                            </div>
+                     {% endfor %}
+
+            {% else %}
+                <h2 data-animate="fadeInDown" class="divleft bottommargin font-body ls3" style="max-width: 700px;font-style: italic; font-size: 40px; font-family: 'Playfair Display';">{{ asset_mapping.asset_ID.asset_display_name }}</h2>
+                   
+                         
+                                 
+									<div class="not-dark">
+                                        
+
+                                        <form role="form" class="clearfix" method="post">
+
+                                        {% csrf_token %}
+                                       
+                                        <div class="form-group  ">
+                                          <label for="id_message" class="control-label required-field ">
+                                           Please confirm you want to be removed<br>
+                                         
+                                            </label>
+                                        </div>
+
+
+                                        <table class = "table table-responsive table-hover">
+                                            <thead>
+                                                <tr>
+                                                    
+                                                    <th>Member</th>
+                                                    <th>Email</th>
+                                                    <th>Date Joined</th>
+                                                     {% if is_verifying %}
+                                                        <th>Is Verified?</th>
+                                                        <th>Membership Number</th>
+                                                        <th>Swipe Number</th>
+                                                    {% endif %}
+                                                    <th>Notes</th>
+                                                    
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                
+                                                
+                                                <tr>
+                                                <td>
+                                                   
+                                                    {{ asset_mapping.user_ID.last_name }}, {{ asset_mapping.user_ID.first_name }}
+                                                </td>
+                                                <td>{{ asset_mapping.user_ID.email }}</td>
+                                           
+                                                <td>{{ asset_mapping.date_created | date:"d M Y" }}</td>
+                                               
+                                                
+                                
+                                                </tr>
+                                                
+                                        </tbody>
+                                        </table>
+
+
+
+                                        <div class="form-group">
+                                                <div class="form-group">
+                                                    <button class="t400 capitalize button  button-border button-light button-circle nomargin"><a href={% url 'my_details' %}>Do not remove</a></button>
+                                                </div> 
+                                                <button type="submit" class="t400 capitalize button  button-border button-dark button-circle nomargin">Yes, remove</button>
+                                                </div>
+                                                 
+                                         </form>
+								</div>
+                                   
+                                   
+                                  
+                       
+                    
+                                
+            <div class="clear"></div>
+
+                    <div class="row topmargin-lg divcenter" style="max-width: 1000px;"></div>
+
+                {% endif %}
+                </div>
+
+            </div>
+
+        </section> <!--#slider end -->
+
+    {% endblock %}
